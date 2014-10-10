@@ -44,7 +44,7 @@ instance MonadIO m => HasInfluxPool (ReaderT InfluxPool m) where
 
 -- | Initialize the Influx Snaplet.
 initInflux :: SnapletInit b InfluxState
-initInflux = makeSnaplet "influx" description datadir $ do
+initInflux = makeSnaplet "influxdb" description datadir $ do
     p <- mkSnapletInfluxPool
 
     let (InfluxPool _ c) = p
