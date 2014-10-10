@@ -48,7 +48,7 @@ Library
     snap                      >= 0.13    && < 0.14,
     monad-control             >= 0.3     && < 0.4,
     http-client               >= 0.3     && < 0.4,
-    influxdb                  >= 0.10    && < 0.11,
+    influxdb                  >= 0.7     && < 0.8,
     bytestring                >= 0.9     && < 11,
     lens                      >= 4       && < 5,
     transformers              >= 0.4     && < 0.5,
@@ -58,4 +58,4 @@ Library
 
 Source-Repository head
   Type:                 git
-  Location:             https://github.com/ixmatus/snaplet-amqp
+  Location:             https://github.com/ixmatus/snaplet-influxdb
