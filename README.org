@@ -5,10 +5,10 @@
   =snaplet-influxdb= provides a convenience interface to the Haskell
   InfluxDB package.
 
-  **NOTE:** this code only builds a pool with the one server
-  description provided in the config. When I get around to it the
-  configuration will be more advanced allowing you to specify a pool
-  of servers for the InfluxDB client to use.
+  *NOTE:* this code only builds a pool with the one server description
+  provided in the config. When I get around to it the configuration
+  will be more advanced allowing you to specify a pool of servers for
+  the InfluxDB client to use.
 
   Usage is simple, make sure you've configured the connections
   correctly in the InfluxDB snaplet:
