@@ -18,14 +18,15 @@ module Snap.Snaplet.InfluxDB
 import           Control.Monad.State
 import           Control.Monad.Trans.Reader
 import           Data.Configurator
-import           Data.Configurator.Types
-import           Database.InfluxDB
+import           Data.Configurator.Types    as CT
+import           Data.Text                  (Text)
+import           Database.InfluxDB          as IN
 import           Network.HTTP.Client
 import           Paths_snaplet_influxdb
 import           Snap.Snaplet
 
 -------------------------------------------------------------------------------
-data InfluxPool = InfluxPool DB Config
+data InfluxPool = InfluxPool DB IN.Config
 
 type DB = Text
 
@@ -46,13 +47,16 @@ initInflux :: SnapletInit b InfluxState
 initInflux = makeSnaplet "influx" description datadir $ do
     p <- mkSnapletInfluxPool
 
-    onUnload (destroyAllResources p)
+    let (InfluxPool _ c) = p
+        mgr              = configHttpManager c
+
+    onUnload (closeManager mgr)
 
     return $ InfluxState p
 
   where
-    description = "Snaplet for Influx library"
-    datadir = Just $ liftM (++"/resources/influx") getDataDir
+    description = "Snaplet for the InfluxDB library"
+    datadir = Just $ liftM (++"/resources/influxdb") getDataDir
 
 -------------------------------------------------------------------------------
 -- | Constructs a connection in a snaplet context.
@@ -63,25 +67,33 @@ mkSnapletInfluxPool = do
 
 -------------------------------------------------------------------------------
 -- | Constructs a connect from Config.
-mkInfluxPool :: MonadIO m => Config -> m InfluxPool
+mkInfluxPool :: MonadIO m => CT.Config -> m InfluxPool
 mkInfluxPool conf = do
-  host  <- liftIO $ require conf "host"
-  port  <- liftIO $ require conf "port"
+  host' <- liftIO $ require conf "host"
+  port' <- liftIO $ require conf "port"
   ssl   <- liftIO $ require conf "ssl"
   db    <- liftIO $ require conf "db"
   user  <- liftIO $ require conf "user"
   pass  <- liftIO $ require conf "pass"
 
   mgr   <- liftIO $ newManager defaultManagerSettings
-  pool  <- newServerPool $ Server host port ssl
+  pool  <- liftIO $ newServerPool (Server host' port' ssl) []
 
   let cnf = Config (Credentials user pass) pool mgr
 
-  return =<< liftIO $ InfluxPool db cnf
+  return $ InfluxPool db cnf
 
 -------------------------------------------------------------------------------
 -- | Runs an INFLUX action in any monad with a HasInfluxPoolonn instance.
-runInflux :: (HasInfluxPool m) => (Config -> IO ()) -> m ()
+runInflux :: (HasInfluxPool m) => (IN.Config -> IO ()) -> m ()
 runInflux action = do
     (InfluxPool _ pool) <- getInfluxPool
     liftIO $! action pool
+
+-------------------------------------------------------------------------------
+-- | Runs an INFLUX action in any monad with a HasInfluxPoolonn instance.
+runInfluxPost :: (HasInfluxPool m) => (IN.Config -> IO ()) -> m ()
+runInfluxPost action = do
+    (InfluxPool db pool) <- getInfluxPool
+    liftIO $ postWithPrecision pool db SecondsPrecision $ do
+        liftIO $! action pool
