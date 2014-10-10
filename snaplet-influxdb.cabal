@@ -1,5 +1,5 @@
 Name:                snaplet-influxdb
-Version:             1.0.0.1
+Version:             1.0.0.2
 Synopsis:            Snap framework snaplet for the InfluxDB library
 Homepage:            https://github.com/ixmatus/snaplet-influxdb
 License:             BSD3
