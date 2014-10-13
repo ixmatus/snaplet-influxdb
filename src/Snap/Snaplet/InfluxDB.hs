@@ -84,15 +84,15 @@ mkInfluxPool conf = do
   return $ InfluxPool db cnf
 
 -------------------------------------------------------------------------------
--- | Runs an INFLUX action in any monad with a HasInfluxPoolonn instance.
-runInflux :: (HasInfluxPool m) => (IN.Config -> IO ()) -> m ()
+-- | Runs an INFLUX action in any monad with a HasInfluxPool instance.
+runInflux :: (HasInfluxPool m) => (IN.Config -> IO r) -> m r
 runInflux action = do
     (InfluxPool _ pool) <- getInfluxPool
     liftIO $! action pool
 
 -------------------------------------------------------------------------------
--- | Runs an INFLUX action in any monad with a HasInfluxPoolonn instance.
-runInfluxPost :: (HasInfluxPool m) => (IN.Config -> IO ()) -> m ()
+-- | Runs an INFLUX action in any monad with a HasInfluxPool instance.
+runInfluxPost :: (HasInfluxPool m) => (IN.Config -> IO r) -> m r
 runInfluxPost action = do
     (InfluxPool db pool) <- getInfluxPool
     liftIO $ postWithPrecision pool db SecondsPrecision $ do
