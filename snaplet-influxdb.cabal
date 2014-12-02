@@ -12,8 +12,8 @@ Build-type:          Simple
 Stability:           stable
 Bug-reports:         https://github.com/ixmatus/snaplet-influxdb/issues
 Package-url:         http://hackage.haskell.org/package/snaplet-influxdb
-Tested-with:         GHC == 7.6.3
-Cabal-version:       >=1.14.0
+Tested-with:         GHC == 7.6.3, GHC == 7.8.3
+Cabal-version:       >=1.10
 
 description:
 
@@ -52,7 +52,7 @@ Library
     monad-control             >= 0.3     && < 0.4,
     text                      >= 1.0     && < 2.0,
     http-client               >= 0.3     && < 0.4,
-    influxdb                  >= 0.7     && < 0.8,
+    influxdb                  >= 0.9     && < 1.0,
     bytestring                >= 0.9     && < 11,
     lens                      >= 4       && < 5,
     transformers              >= 0.4     && < 0.5,
